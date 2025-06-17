@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Weather App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+
+<body>
+  <div id="overlay"><svg width="80" height="80" viewBox="0 0 50 50">
+  <circle
+    cx="25"
+    cy="25"
+    r="20"
+    fill="none"
+    stroke="#888"
+    stroke-width="5"
+    stroke-linecap="round"
+    stroke-dasharray="31.4 31.4"
+  >
+    <animateTransform
+      attributeName="transform"
+      type="rotate"
+      from="0 25 25"
+      to="360 25 25"
+      dur="1s"
+      repeatCount="indefinite"
+    />
+  </circle>
+</svg>
+</div>
+  <div id="titel">
+     <h1 id="demo">Weather Today...</h1>
+     <div id="loc"><div id="tag">📍</div>
+     <div>My location</div></div>
+     <div id="wind-speed"></div>
+    <svg viewBox="0 0 100 100" width="200">
+  <!-- Pole -->
+  <line x1="10" y1="20" x2="10" y2="70" stroke="#444" stroke-width="3" />
+
+  <!-- Windsock -->
+  <path id="sock" d="M10,30 C40,20 60,40 90,30 L90,60 C60,70 40,50 10,60 Z" fill="#f44" />
+  
+  <!-- Animation -->
+  <animateTransform
+    xlink:href="#sock"
+    attributeName="transform"
+    type="skewY"
+    values="0;5;-5;0"
+    dur="2s"
+    repeatCount="indefinite" />
+</svg>
+</div>
+<iframe id="clock" src="https://free.timeanddate.com/clock/i9xnrfgm/n85/fn6/fs24/tct/pct/ftb/pa2/th2" frameborder="0" width="165" height="32" allowtransparency="true"></iframe>
+
+<div id="search">
+<label for="bar" >🔎</label>
+<input type="text" id="bar" placeholder="Enter 'city' or '-23.9217,54.5722'"></input>
+</div>
+
+<div id="content">
+ <div>
+  <div id="today">
+    <div id="iconBox">
+      <img src="" id="today-icon" alt="weather icon">
+      <div>
+        <h2 id="condition"></h2>
+        <div id="today-temp"></div>
+      </div>
+    </div>
+
+    <div id="todayLoc">
+      <h1 id="city"></h1>
+      <h3 id="country"></h3>
+    </div>
+  </div>
+  <div id="today-stats">
+    <div class="text">😸 Feels like: </div><div class="data" id="feels"></div ><div class="data2" id="feelsdata"></div>
+    <div class="text">📈 Highest: </div><div class="data" id="high"></div>
+    <div class="text">📉 Lowest: </div><div class="data" id="low"></div>
+    <div class="text">🌅 Sunrise: </div><div class="data" id="rise"></div>
+    <div class="text">🌇 Sunset: </div><div class="data" id="set"></div>
+    <div class="text">🌧️ Precipitation: </div><div class="data" id="rain"></div>
+    <div class="text">☀️ UV Index: </div><div class="data" id="uv"></div>
+  </div>
+
+</div>
+
+  <div id="hourlyContainer">
+
+  </div>
+
+  <div id="longContainer">
+
+
+
+  </div>
+
+
+
+</div>  
+
+<div id="disclaimer"> We Only Support Metric Units of measurement*</div>
+
+
+      <div class="footer">
+    <div class="links">
+   <a href="https://github.com/44RY4N" class="animate3d" target="_blank" noopener norefferer><svg width="24" height="24" fill="#000000" viewBox="0 0 24 24" transform="" id="injected-svg"> Boxicons v3.0 https://boxicons.com | License https://docs.boxicons.com/free<path fill-rule="evenodd" d="M12.026 2c-5.509 0-9.974 4.465-9.974 9.974 0 4.406 2.857 8.145 6.821 9.465.499.09.679-.217.679-.481 0-.237-.008-.865-.011-1.696-2.775.602-3.361-1.338-3.361-1.338-.452-1.152-1.107-1.459-1.107-1.459-.905-.619.069-.605.069-.605 1.002.07 1.527 1.028 1.527 1.028.89 1.524 2.336 1.084 2.902.829.091-.645.351-1.085.635-1.334-2.214-.251-4.542-1.107-4.542-4.93 0-1.087.389-1.979 1.024-2.675-.101-.253-.446-1.268.099-2.64 0 0 .837-.269 2.742 1.021a9.6 9.6 0 0 1 2.496-.336 9.6 9.6 0 0 1 2.496.336c1.906-1.291 2.742-1.021 2.742-1.021.545 1.372.203 2.387.099 2.64.64.696 1.024 1.587 1.024 2.675 0 3.833-2.33 4.675-4.552 4.922.355.308.675.916.675 1.846 0 1.334-.012 2.41-.012 2.737 0 .267.178.577.687.479C19.146 20.115 22 16.379 22 11.974 22 6.465 17.535 2 12.026 2" clip-rule="evenodd"/></svg></a>
+   <a class="animate3d d1" href="https://www.instagram.com/cristiano/" target="_blank" noopener norefferer><svg xmlns="http://www.w3.org/2000/svg" height="20" width="17.5" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/></svg></a>
+<a class="animate3d d2" href="https://steamcommunity.com/profiles/76561199489587015/" target="_blank" noopener norefferer><svg xmlns="http://www.w3.org/2000/svg" height="20" width="19.375" viewBox="0 0 496 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M496 256c0 137-111.2 248-248.4 248-113.8 0-209.6-76.3-239-180.4l95.2 39.3c6.4 32.1 34.9 56.4 68.9 56.4 39.2 0 71.9-32.4 70.2-73.5l84.5-60.2c52.1 1.3 95.8-40.9 95.8-93.5 0-51.6-42-93.5-93.7-93.5s-93.7 42-93.7 93.5v1.2L176.6 279c-15.5-.9-30.7 3.4-43.5 12.1L0 236.1C10.2 108.4 117.1 8 247.6 8 384.8 8 496 119 496 256zM155.7 384.3l-30.5-12.6a52.8 52.8 0 0 0 27.2 25.8c26.9 11.2 57.8-1.6 69-28.4 5.4-13 5.5-27.3 .1-40.3-5.4-13-15.5-23.2-28.5-28.6-12.9-5.4-26.7-5.2-38.9-.6l31.5 13c19.8 8.2 29.2 30.9 20.9 50.7-8.3 19.9-31 29.2-50.8 21zm173.8-129.9c-34.4 0-62.4-28-62.4-62.3s28-62.3 62.4-62.3 62.4 28 62.4 62.3-27.9 62.3-62.4 62.3zm.1-15.6c25.9 0 46.9-21 46.9-46.8 0-25.9-21-46.8-46.9-46.8s-46.9 21-46.9 46.8c.1 25.8 21.1 46.8 46.9 46.8z"/></svg></a>
+    </div>
+    <div><svg xmlns="http://www.w3.org/2000/svg" height="14" width="14" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM199.4 312.6c-31.2-31.2-31.2-81.9 0-113.1s81.9-31.2 113.1 0c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9c-50-50-131-50-181 0s-50 131 0 181s131 50 181 0c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0c-31.2 31.2-81.9 31.2-113.1 0z"/></svg> 2025 weather-app, all rights reserved.</div>
+    <div>made by 44RY4N.</div>
+    </div>
+</body>
+</html>
