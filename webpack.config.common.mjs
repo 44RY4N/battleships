@@ -9,13 +9,13 @@ export default {
   output: {
     filename: "main.js",
     path: path.resolve(__dirname, "dist"),
-    publicPath: "/weather-app/",
+    publicPath: "/battleships/",
     clean: true,
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: "./src/template.html",
-      base: "/weather-app/",
+      base: "/battleships/",
     }),
   ],
   module: {

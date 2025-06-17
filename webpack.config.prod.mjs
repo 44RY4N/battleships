@@ -6,7 +6,7 @@ import common from "./webpack.config.common.mjs";
 export default merge(common, {
   mode: "production",
   output: {
-    publicPath: "/weather-app/",
+    publicPath: "/battleships/", // here 
   },
   module: {
     rules: [
