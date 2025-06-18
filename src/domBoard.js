@@ -1,13 +1,13 @@
 import { allShips } from "./ship.js";
 
 
-function createBoard(size){
-    const board = document.querySelector("#board");
+function createBoard(size, board){
+    
     const fragment = document.createDocumentFragment();
     let cellSize = 100 / size;
     board.style.gridTemplateColumns = `repeat(${size} , ${cellSize}%)`;
     board.style.gridTemplateRows = `repeat(${size} , ${cellSize}%)`;
-    board.style.position  = "absolute";
+    board.style.position  = "";
 
     for(let i = 0; i< size; i++){
         for(let j=0; j<size; j++){
@@ -29,6 +29,37 @@ function createBoard(size){
             cell.addEventListener("drop",dropShip);
 
 
+            fragment.appendChild(cell);
+        }
+    }
+    board.appendChild(fragment);
+}
+
+// create board end
+
+// create board computer
+
+function createBoardComputer(size,board){
+    const fragment = document.createDocumentFragment();
+    let cellSize = 100 / size;
+    board.style.gridTemplateColumns = `repeat(${size} , ${cellSize}%)`;
+    board.style.gridTemplateRows = `repeat(${size} , ${cellSize}%)`;
+    board.style.position  = "";
+
+    for(let i = 0; i< size; i++){
+        for(let j=0; j<size; j++){
+            const cell = document.createElement("div");
+            cell.classList.add("cell");
+            cell.style.width = `100%`;
+            cell.style.height = `100%`;
+            cell.style.border = "1px solid black";
+            cell.dataset.index = i;
+            cell.dataset.jndex = j;
+
+            cell.style.position = "";
+            cell.style.zIndex = "0"
+            
+            //event listners    
             fragment.appendChild(cell);
         }
     }
@@ -233,4 +264,4 @@ let i = target.dataset.index;
 
 }
 
-export {createBoard};
+export {createBoard, createBoardComputer};
