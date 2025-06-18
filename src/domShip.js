@@ -11,6 +11,12 @@ function domShip(obj){
     container.append(ship);
 }
 function dragStart(e) {
-  e.dataTransfer.setData('text/plain', e.target.id);
+  const target = e.target.closest(".ships"); // ensures you're always referencing the draggable container
+  if (!target || !target.id) {
+    console.warn("dragStart: invalid drag target", e.target);
+    return;
+  }
+  e.dataTransfer.setData('text/plain', target.id);
 }
+
 export{domShip}

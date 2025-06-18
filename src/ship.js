@@ -1,6 +1,10 @@
 
 import {domShip} from './domShip.js';
 
+const allShips = {
+    list:[]
+}
+
 class ship{
     constructor(length, id){
         this.length = length;
@@ -23,8 +27,9 @@ class ship{
         }
     }
     dom(){
+        allShips.list.push(this);
         domShip(this);
     }
 }
 
-export {ship};
+export {ship, allShips};

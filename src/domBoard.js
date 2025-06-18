@@ -1,3 +1,6 @@
+import { allShips } from "./ship.js";
+
+
 function createBoard(size){
     const board = document.querySelector("#board");
     const fragment = document.createDocumentFragment();
@@ -42,9 +45,35 @@ function dropShip(e){
 
   if (!target.classList.contains("ship")) {
 
+if (!ship) {
+  console.warn("Could not find dragged ship with ID:", shipId);
+  return; // stop further execution
+}
+
+console.log("ship dataset", ship.dataset);
+
+    console.log("ship dataset", ship.dataset)
+     let result = calculateDomLengthLand(ship.dataset.length);
+
+     if(! checkNeighbours(target, result)) return alert("ship colliding");
+
+     console.log("neighbourse checked")
+
+      removePreviousMarks(ship); 
+
+      result = calculateDomLengthLand(ship.dataset.length);
+
 
     console.log(ship.dataset.length)
-   let result = calculateDomLengthLand(ship.dataset.length);
+  
+
+   ship.dataset.refi = target.dataset.jndex - result[0] ;
+   ship.dataset.refj = target.dataset.jndex - result[1] ;
+   ship.dataset.I = target.dataset.index ;
+
+   console.log("refi",ship.dataset.refi)
+   console.log("refj",ship.dataset.refj)
+   console.log("I",ship.dataset.I)
 
 
 
@@ -67,10 +96,9 @@ function dropShip(e){
     ship.style.zIndex = "10";
 
     board.appendChild(ship);
-    for (let child of board.children){
-        child.classList.remove("ship") 
-        child.classList.remove("hidden");   
-    }
+    
+
+    
 
     target.classList.add("ship");
     target.classList.add("hidden");
@@ -147,6 +175,61 @@ function isValidDrop(target,result){
 
   console.log("is valid")
   return true;
+
+}
+function removePreviousMarks(ship) {
+  const i = ship.dataset.I;
+  const refStart = parseInt(ship.dataset.refi);
+  const refEnd = parseInt(ship.dataset.refj);
+
+  // Remove 'hidden' and 'ship' classes from the previously occupied cells
+  for (let j = refStart; j <= refEnd; j++) {
+    const cell = getCellByIndex(i, j);
+    if (cell) {
+      console.log("removing classes from cell", i,j);
+      cell.classList.remove("ship", "hidden");
+    }
+  }
+}
+
+function checkNeighbours(target, result){
+let i = target.dataset.index;
+  let j = target.dataset.jndex;
+
+
+   while (result[0] > 0){
+    let newJ = j - result[0]
+
+    if(!getCellByIndex(i, newJ)){
+      return false;
+    }
+
+   if( getCellByIndex(i, newJ).classList.contains("ship"))
+    return false;
+   // console.log(getCellByIndex(i,newJ))
+    result[0]--;
+    }
+
+  //  console.log("result inside addNeighbours", result)
+
+    while (result[1] < 0){
+
+      console.log(" checking Neighbours ")
+
+      let newI = j - result[1];
+
+        if(!getCellByIndex(i, newI)){
+      return false;
+    }
+
+   //   console.log("newI", newI)
+      if (getCellByIndex(i, newI).classList.contains("ship")) return false;
+  //    console.log(getCellByIndex(i,newI))
+      result[1]++;
+    }
+
+    return true
+
 
 }
 
