@@ -1,11 +1,12 @@
 import {ship} from "./ship.js"
-import { gameboard } from "./gameboard.js";
+
 import "./styles.css"
 import { createBoard } from "./domBoard.js";
-const ship1 = new ship(4);
-const ship2 = new ship(5);
+const ship1 = new ship(4,"s1");
+const ship2 = new ship(5,"s2");
 
-const gameboard1 = new gameboard(10);
-console.log(gameboard1);
+ship1.dom();
+ship2.dom();
+
 
 const board = createBoard(10);
