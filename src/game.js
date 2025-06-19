@@ -2,9 +2,9 @@ import { ship } from "./ship.js";
 import { createBoard, createBoardComputer } from "./domBoard.js";
 
 function initializeGame() {
-  const ship1 = new ship(4, "s1");
-  const ship2 = new ship(5, "s2");
-  const ship3 = new ship(2, "s3");
+  const ship1 = new ship(4, "s1",10);
+  const ship2 = new ship(5, "s2",10);
+  const ship3 = new ship(2, "s3",10);
   ship1.dom();
   ship2.dom();
   ship3.dom();

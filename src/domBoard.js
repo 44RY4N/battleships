@@ -2,6 +2,7 @@ import {
   checkNeighboursPort,
   isValidDropPort,
   handleRotationPort,
+  addNeighboursPort,
 } from "./domShip.js";
 import { allShips } from "./ship.js";
 
@@ -56,7 +57,9 @@ function createBoardComputer(size, board) {
       cell.style.height = `100%`;
       cell.style.border = "1px solid black";
       cell.dataset.index = i;
+      cell.dataset.indexComp = i;
       cell.dataset.jndex = j;
+      cell.dataset.jndexComp = j;
 
       cell.style.position = "";
       cell.style.zIndex = "0";
@@ -67,12 +70,87 @@ function createBoardComputer(size, board) {
   }
   board.appendChild(fragment);
 
-  populateComputerBoard(board);
+  populateComputerBoard(board, size);
 }
 
-function populateComputerBoard(board) {
-  const copy = allShips.list.slice();
-  console.log(copy);
+function populateComputerBoard(board, size) {
+    const copy = allShips.list.slice();
+    const maxAttempts = 100;
+
+    function checkShipSpan(target, tempShip, result, orientation, length) {
+        let i = parseInt(target.dataset.indexComp);
+        let j = parseInt(target.dataset.jndexComp);
+        if (orientation === "land") {
+            for (let offset = 0; offset < length; offset++) {
+                let newJ = j + offset;
+                const cell = getCellByIndexComp(i, newJ);
+                if (!cell || cell.classList.contains("ship")) return false;
+            }
+        } else {
+            for (let offset = 0; offset < length; offset++) {
+                let newI = i + offset;
+                const cell = getCellByIndexComp(newI, j);
+                if (!cell || cell.classList.contains("ship")) return false;
+            }
+        }
+        return true;
+    }
+
+    for (let ship of copy) {
+        let attempts = 0;
+        let placed = false;
+
+        while (!placed && attempts < maxAttempts) {
+            const randI = Math.floor(Math.random() * size);
+            const randJ = Math.floor(Math.random() * size);
+            const orientation = Math.random() < 0.5 ? "land" : "port";
+            const target = getCellByIndexComp(randI, randJ);
+
+            if (!target) {
+                attempts++;
+                continue;
+            }
+
+            const tempShip = {
+                dataset: {
+                    length: ship.length,
+                    or: orientation,
+                    I: randI.toString(),
+                    J: randJ.toString()
+                }
+            };
+
+            const result = calculateDomLengthLand(ship.length);
+
+            // Validate placement
+            let isValid = false;
+            if (orientation === "land") {
+                isValid = isValidDrop(target, result, true) && checkNeighbours(target, result, true);
+            } else {
+                isValid = isValidDropPort(tempShip, result, true) && checkNeighboursPort(tempShip, result, true);
+            }
+
+            // Additional span check
+            if (isValid && checkShipSpan(target, tempShip, result, orientation, ship.length)) {
+                // Mark all cells together
+                console.log(`Placed ship (length=${ship.length}, or=${orientation}) at [${randI}, ${randJ}]`);
+                if (orientation === "land") {
+                    target.classList.add("ship");
+                    addNeighbours(target, calculateDomLengthLand(ship.length), true);
+                } else {
+                    target.classList.add("ship");
+                    addNeighboursPort(tempShip, calculateDomLengthLand(ship.length), true);
+                }
+                placed = true;
+            }
+
+            attempts++;
+        }
+
+        if (!placed) {
+            console.warn(`Could not place ship of length ${ship.length} after ${maxAttempts} attempts`);
+        }
+    }
 }
 
 function dropShip(e) {
@@ -83,7 +161,7 @@ function dropShip(e) {
   ship.dataset.J = target.dataset.jndex;
   ship.dataset.index = target.dataset.index;
   ship.dataset.jndex = target.dataset.jndex;
-  const board = document.querySelector("#board");
+  const board = target.parentElement;
 //  console.log(target);
 
   if (!target.classList.contains("ship")) {
@@ -164,7 +242,7 @@ function calculateDomLengthLand(length) {
   return result;
 }
 
-function addNeighbours(target, result) {
+function addNeighbours(target, result, flag = false) {
   result[0];
   let i = target.dataset.index;
   let j = target.dataset.jndex;
@@ -173,8 +251,13 @@ function addNeighbours(target, result) {
 
   while (result[0] > 0) {
     let newJ = j - result[0];
-    getCellByIndex(i, newJ).classList.add("hidden");
+    if(flag){
+    getCellByIndexComp(i, newJ).classList.add("ship");
+    }
+    else{
     getCellByIndex(i, newJ).classList.add("ship");
+    getCellByIndex(i, newJ).classList.add("hidden");
+    }
     // console.log(getCellByIndex(i,newJ))
     result[0]--;
   }
@@ -187,8 +270,13 @@ function addNeighbours(target, result) {
     let newI = j - result[1];
 
     //   console.log("newI", newI)
-    getCellByIndex(i, newI).classList.add("hidden");
+    if(flag){
+    getCellByIndexComp(i, newI).classList.add("ship");
+  }
+  else{
     getCellByIndex(i, newI).classList.add("ship");
+    getCellByIndex(i, newI).classList.add("hidden");
+  }
     //    console.log(getCellByIndex(i,newI))
     result[1]++;
   }
@@ -196,6 +284,10 @@ function addNeighbours(target, result) {
 
 function getCellByIndex(i, j) {
   return document.querySelector(`.cell[data-index="${i}"][data-jndex="${j}"]`);
+}
+
+function getCellByIndexComp(i, j) {
+  return document.querySelector(`.cell[data-index-comp="${i}"][data-jndex-comp="${j}"]`);
 }
 
 function isValidDrop(target, result) {
@@ -248,19 +340,27 @@ function removePreviousMarksPort(ship) {
   }
 }
 
-function checkNeighbours(target, result) {
+function checkNeighbours(target, result, flag = false) {
   let i = target.dataset.index;
   let j = target.dataset.jndex;
 
   while (result[0] > 0) {
     let newJ = j - result[0];
+    if(flag){
+          if (!getCellByIndexComp(i, newJ)) {
+      return false;
+    }
 
+    if (getCellByIndexComp(i, newJ).classList.contains("ship")) return false;
+    }
+    else{
     if (!getCellByIndex(i, newJ)) {
       return false;
     }
 
     if (getCellByIndex(i, newJ).classList.contains("ship")) return false;
     // console.log(getCellByIndex(i,newJ))
+  }
     result[0]--;
   }
 
@@ -270,13 +370,22 @@ function checkNeighbours(target, result) {
    // console.log(" checking Neighbours ");
 
     let newI = j - result[1];
+    if(flag){
+          if (!getCellByIndexComp(i, newI)) {
+      return false;
+    }
 
+    //   console.log("newI", newI)
+    if (getCellByIndexComp(i, newI).classList.contains("ship")) return false;
+    }
+    else{
     if (!getCellByIndex(i, newI)) {
       return false;
     }
 
     //   console.log("newI", newI)
     if (getCellByIndex(i, newI).classList.contains("ship")) return false;
+  }
     //    console.log(getCellByIndex(i,newI))
     result[1]++;
   }
@@ -294,4 +403,5 @@ export {
   removePreviousMarksPort,
   checkNeighbours,
   isValidDrop,
+  getCellByIndexComp
 };

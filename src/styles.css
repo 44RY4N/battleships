@@ -30,8 +30,8 @@ body {
 #board,
 #boardComputer {
   display: grid;
-  width: 30%;
-  height: 60%;
+  width: 20vw;
+  height: 40vh;
 }
 
 #shipContainer {
@@ -39,16 +39,19 @@ body {
   justify-content: center;
   background-color: black;
   width: 20vw;
-  height: 20vh;
+  height: 40vh;
 }
 
 .ships {
   background-color: red;
   width: 2vw;
   height: 2vh;
-  margin: 2px;
 }
 
 .hidden {
   display: none;
+}
+
+.cell.ship{
+    background-color: green;
 }

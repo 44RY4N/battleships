@@ -5,11 +5,12 @@ const allShips = {
 };
 
 class ship {
-  constructor(length, id) {
+  constructor(length, id, boardSize) {
     this.length = length;
     this.hit = 0;
     this.orientation = "land";
     this.id = id;
+    this.boardSize = boardSize;
   }
   hitShip() {
     this.hit++;
@@ -26,7 +27,7 @@ class ship {
   }
   dom() {
     allShips.list.push(this);
-    domShip(this);
+    domShip(this,this.boardSize);
   }
 }
 

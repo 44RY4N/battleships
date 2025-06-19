@@ -1,21 +1,29 @@
-import { calculateDomLengthLand, removePreviousMarks,addNeighbours,removePreviousMarksPort, getCellByIndex, isValidDrop, checkNeighbours} from "./domBoard.js";
+import { calculateDomLengthLand, removePreviousMarks,addNeighbours,removePreviousMarksPort, getCellByIndex, isValidDrop, checkNeighbours, getCellByIndexComp} from "./domBoard.js";
 
 
 const container = document.querySelector("#shipContainer")
-function domShip(obj){
+function domShip(obj,boardSize){
     let ship = document.createElement("div");
     ship.addEventListener("dragstart",dragStart);
     ship.classList.add("ships")
     ship.id = obj.id;
     ship.dataset.length = obj.length;
     ship.dataset.or = obj.orientation;
+    ship.style.width = "100%"
+    ship.style.height = "100%"
     ship.draggable = true;
 
     ship.addEventListener("click",rotateShip);
 
 
+    const shipCase = document.createElement("div");
+    shipCase.id = "shipCase";
+    shipCase.style.width = `${ship.dataset.length * 10}%`;
+    shipCase.style.height = `${10}%`;
+    shipCase.appendChild(ship);
 
-    container.append(ship);
+
+    container.append(shipCase);
 }
 function dragStart(e) {
   const target = e.target.closest(".ships"); // ensures you're always referencing the draggable container
@@ -29,7 +37,7 @@ function dragStart(e) {
 
 function rotateShip(e){
 
-  if (e.target.parentElement.id == "shipContainer") return;
+  if (e.target.parentElement.id == "shipCase") return;
 
   const target = e.target.closest(".ships");
   let result = calculateDomLengthLand(target.dataset.length);
@@ -123,7 +131,7 @@ function isValidDropPort(target,result){
 
 }
 
-function checkNeighboursPort(target, result){
+function checkNeighboursPort(target, result, flag = false){
 let i = target.dataset.I;
   let j = target.dataset.J;
 
@@ -133,14 +141,27 @@ let i = target.dataset.I;
    while (result[0] > 0){
     let newJ = i - result[0]
 
-    if(!getCellByIndex(newJ, j)){
+
+       if(flag){
+          if(!getCellByIndexComp(newJ, j)){
       return false;
     }
-
+       if( getCellByIndexComp(newJ, j).classList.contains("ship")){
+  //  console.log(`ship found at ${newJ}, ${j}`)
+    return false;
+   }
+   }
+   else{
+        if(!getCellByIndex(newJ, j)){
+      return false;
+    }
    if( getCellByIndex(newJ, j).classList.contains("ship")){
   //  console.log(`ship found at ${newJ}, ${j}`)
     return false;
    }
+
+
+  }
    // console.log(getCellByIndex(i,newJ))
     result[0]--;
     }
@@ -153,6 +174,20 @@ let i = target.dataset.I;
 
       let newI = i - result[1];
 
+      if(flag){
+         if(!getCellByIndexComp(newI, j)){
+      return false;
+    }
+
+   //   console.log("newI", newI)
+      if (getCellByIndexComp(newI, j).classList.contains("ship")){ 
+      //  console.log(`ship found at ${newI}, ${j}`);
+        return false; }
+
+      }
+
+
+      else{
         if(!getCellByIndex(newI, j)){
       return false;
     }
@@ -161,6 +196,7 @@ let i = target.dataset.I;
       if (getCellByIndex(newI, j).classList.contains("ship")){ 
       //  console.log(`ship found at ${newI}, ${j}`);
         return false; }
+      }
   //    console.log(getCellByIndex(i,newI))
       result[1]++;
     }
@@ -171,18 +207,25 @@ let i = target.dataset.I;
 }
 
 
-function addNeighboursPort(target, result){
+function addNeighboursPort(target, result, flag = false){
   let i = target.dataset.I;
   let j = target.dataset.J;
 
-//  console.log("inside add neighbours port",result)
+ console.log("inside add neighbours port result = ",result)
+ console.log("target =", target)
+ console.log("flag =", flag)
 //  console.log(`Added classes in port to neighbours of ${i} ${j}`);
 
 
    while (result[0] > 0){
     let newJ = i - result[0]
+    if(flag){
+    getCellByIndexComp(newJ, j).classList.add("ship");
+  }
+  else{
     getCellByIndex(newJ, j).classList.add("hidden")
     getCellByIndex(newJ, j).classList.add("ship")
+  }
   // console.log("adding ship and hidden to",(newJ))
     result[0]--;
     }
@@ -196,11 +239,16 @@ function addNeighboursPort(target, result){
       let newI = i - result[1];
 
    //   console.log("newI", newI)
+   if(flag){
+      getCellByIndexComp(newI, j).classList.add("ship");
+   }
+   else {
       getCellByIndex(newI, j).classList.add("hidden");
       getCellByIndex(newI, j).classList.add("ship")
+   }
 //  console.log("adding ship and hidden to",(newI))
       result[1]++;
     }
 }
 
-export{domShip, checkNeighboursPort, isValidDropPort, handleRotationPort}
+export{domShip, checkNeighboursPort, isValidDropPort, handleRotationPort, addNeighboursPort}
