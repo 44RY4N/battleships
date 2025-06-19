@@ -1,3 +1,5 @@
+import { calculateDomLengthLand, removePreviousMarks,addNeighbours,removePreviousMarksPort, getCellByIndex, isValidDrop, checkNeighbours} from "./domBoard.js";
+
 
 const container = document.querySelector("#shipContainer")
 function domShip(obj){
@@ -8,6 +10,11 @@ function domShip(obj){
     ship.dataset.length = obj.length;
     ship.dataset.or = obj.orientation;
     ship.draggable = true;
+
+    ship.addEventListener("click",rotateShip);
+
+
+
     container.append(ship);
 }
 function dragStart(e) {
@@ -19,4 +26,181 @@ function dragStart(e) {
   e.dataTransfer.setData('text/plain', target.id);
 }
 
-export{domShip}
+
+function rotateShip(e){
+
+  if (e.target.parentElement.id == "shipContainer") return;
+
+  const target = e.target.closest(".ships");
+  let result = calculateDomLengthLand(target.dataset.length);
+ 
+//  console.log(`clickd rotate with dataset ${target.dataset.or}`)
+
+  if(target.dataset.or === "land"){
+
+  //  console.log("element found in landscape")
+    if(!isValidDropPort(target,result)) { return alert("invalid drop")};
+ if(!checkNeighboursPort(target,result)){  return alert("invalid neighbour")};
+
+    target.dataset.or = "port";
+    removePreviousMarks(target);
+    handleRotationPort(target,result);
+  //  console.log(target);
+  
+  }
+
+    else if(target.dataset.or === "port"){
+    if(!isValidDrop(target,result)) { return alert("invalid drop")};
+ if(!checkNeighbours(target,result)){  return alert("invalid neighbour")};
+
+    target.dataset.or = "land";
+    removePreviousMarksPort(target);
+    handleRotationLand(target,result);
+  
+  }
+
+}
+
+function handleRotationPort(target, result){
+    let i = target.dataset.I ;
+    let j = target.dataset.J ;
+    getCellByIndex(i,j).classList.add("ship");
+    getCellByIndex(i,j).classList.add("hidden");
+
+
+    result = calculateDomLengthLand(target.dataset.length)
+    addNeighboursPort(target,result);
+
+    result = calculateDomLengthLand(target.dataset.length);
+
+    let newGrid = `${target.dataset.I - result[0] + 1 } / ${target.dataset.I - result[1] + 2}`
+    //  console.log("newGridColumn", newGrid)  // newGrid = 2 / 7
+      let newGridCol = target.dataset.J - (-1);
+    //  console.log("newGridRow", newGridCol)  // newGridRow = 3
+        target.style.gridRow = newGrid ;
+        target.style.gridColumn = newGridCol;
+    
+}
+
+function handleRotationLand(target, result){
+    let i = target.dataset.I ;
+    let j = target.dataset.J ;
+    getCellByIndex(i,j).classList.add("ship");
+    getCellByIndex(i,j).classList.add("hidden");
+
+
+    result = calculateDomLengthLand(target.dataset.length)
+    addNeighbours(target,result);
+
+    result = calculateDomLengthLand(target.dataset.length);
+
+    let newGrid = `${target.dataset.J - result[0] + 1 } / ${target.dataset.J - result[1] + 2}`
+    // console.log("newGridColumn", newGrid)  // newGrid = 2 / 7
+      let newGridRow = target.dataset.I - (-1);
+    //  console.log("newGridRow", newGridRow)  // newGridRow = 3
+        target.style.gridRow = newGridRow ;
+        target.style.gridColumn = newGrid;
+    
+}
+
+function isValidDropPort(target,result){
+
+  let i = target.dataset.I;
+//  console.log("i in valid", i)
+//  console.log("result in valid", result)
+
+  let calculatedI = i - result[0] ;
+  let calculatedJ = i - result[1] ;
+
+//  console.log("calculatedI", calculatedI)
+//  console.log("caculatedJ", calculatedJ)
+
+  if (calculatedI < 0) return false;
+  if (calculatedJ > 9) return false;
+
+//  console.log("is valid")
+  return true;
+
+}
+
+function checkNeighboursPort(target, result){
+let i = target.dataset.I;
+  let j = target.dataset.J;
+
+
+
+
+   while (result[0] > 0){
+    let newJ = i - result[0]
+
+    if(!getCellByIndex(newJ, j)){
+      return false;
+    }
+
+   if( getCellByIndex(newJ, j).classList.contains("ship")){
+  //  console.log(`ship found at ${newJ}, ${j}`)
+    return false;
+   }
+   // console.log(getCellByIndex(i,newJ))
+    result[0]--;
+    }
+
+  //  console.log("result inside addNeighbours", result)
+
+    while (result[1] < 0){
+
+    //  console.log(" checking Neighbours ")
+
+      let newI = i - result[1];
+
+        if(!getCellByIndex(newI, j)){
+      return false;
+    }
+
+   //   console.log("newI", newI)
+      if (getCellByIndex(newI, j).classList.contains("ship")){ 
+      //  console.log(`ship found at ${newI}, ${j}`);
+        return false; }
+  //    console.log(getCellByIndex(i,newI))
+      result[1]++;
+    }
+
+    return true
+
+
+}
+
+
+function addNeighboursPort(target, result){
+  let i = target.dataset.I;
+  let j = target.dataset.J;
+
+//  console.log("inside add neighbours port",result)
+//  console.log(`Added classes in port to neighbours of ${i} ${j}`);
+
+
+   while (result[0] > 0){
+    let newJ = i - result[0]
+    getCellByIndex(newJ, j).classList.add("hidden")
+    getCellByIndex(newJ, j).classList.add("ship")
+  // console.log("adding ship and hidden to",(newJ))
+    result[0]--;
+    }
+
+  //  console.log("result inside addNeighbours", result)
+
+    while (result[1] < 0){
+
+  //    console.log("insiede 2nd whle")
+
+      let newI = i - result[1];
+
+   //   console.log("newI", newI)
+      getCellByIndex(newI, j).classList.add("hidden");
+      getCellByIndex(newI, j).classList.add("ship")
+//  console.log("adding ship and hidden to",(newI))
+      result[1]++;
+    }
+}
+
+export{domShip, checkNeighboursPort, isValidDropPort, handleRotationPort}

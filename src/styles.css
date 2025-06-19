@@ -1,54 +1,54 @@
-*{
-    margin:0;
-    padding:0;
-    box-sizing: border-box;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-html{
-    font-size: 16px;
+html {
+  font-size: 16px;
 }
 
-body{
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+body {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-#menu{
-    width: 100%;
-    height: 70vh;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 0.5fr;
-    gap:3rem;
-    justify-items:center;
-    align-items: center;
+#menu {
+  width: 100%;
+  height: 70vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 0.5fr;
+  gap: 3rem;
+  justify-items: center;
+  align-items: center;
 }
 
-#board, #boardComputer{
-    display: grid;
-    width: 30%;
-    height: 60%;
-
+#board,
+#boardComputer {
+  display: grid;
+  width: 30%;
+  height: 60%;
 }
 
-#shipContainer{
-    grid-column: 1/3;
-    justify-content: center;
-    background-color: black;
-    width: 20vw;
-    height: 20vh;
+#shipContainer {
+  grid-column: 1/3;
+  justify-content: center;
+  background-color: black;
+  width: 20vw;
+  height: 20vh;
 }
 
-.ships{
-    background-color: red;
-    width: 2vw;
-    height: 2vh;
-    margin: 2px;
+.ships {
+  background-color: red;
+  width: 2vw;
+  height: 2vh;
+  margin: 2px;
 }
 
-.hidden{
-    display: none;
+.hidden {
+  display: none;
 }

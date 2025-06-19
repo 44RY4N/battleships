@@ -6,7 +6,7 @@ import common from "./webpack.config.common.mjs";
 export default merge(common, {
   mode: "production",
   output: {
-    publicPath: "/battleships/", // here 
+    publicPath: "/battleships/", // here
   },
   module: {
     rules: [
@@ -26,9 +26,7 @@ export default merge(common, {
       },
     ],
   },
-  plugins: [
-    new MiniCssExtractPlugin({ filename: "main.css" }),
-  ],
+  plugins: [new MiniCssExtractPlugin({ filename: "main.css" })],
   optimization: {
     minimize: true,
     minimizer: [
