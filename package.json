@@ -31,8 +31,12 @@
     "prettier": "3.5.3",
     "style-loader": "^4.0.0",
     "terser-webpack-plugin": "^5.3.14",
+    "three": "^0.177.0",
     "webpack": "^5.99.9",
     "webpack-cli": "^6.0.1",
     "webpack-dev-server": "^5.2.1"
+  },
+  "dependencies": {
+    "gsap": "^3.13.0"
   }
 }

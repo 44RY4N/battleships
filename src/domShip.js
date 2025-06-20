@@ -211,9 +211,9 @@ function addNeighboursPort(target, result, flag = false){
   let i = target.dataset.I;
   let j = target.dataset.J;
 
- console.log("inside add neighbours port result = ",result)
- console.log("target =", target)
- console.log("flag =", flag)
+// console.log("inside add neighbours port result = ",result)
+// console.log("target =", target)
+ //console.log("flag =", flag)
 //  console.log(`Added classes in port to neighbours of ${i} ${j}`);
 
 
@@ -251,4 +251,4 @@ function addNeighboursPort(target, result, flag = false){
     }
 }
 
-export{domShip, checkNeighboursPort, isValidDropPort, handleRotationPort, addNeighboursPort}
+export{dragStart, rotateShip, domShip, checkNeighboursPort, isValidDropPort, handleRotationPort, addNeighboursPort}

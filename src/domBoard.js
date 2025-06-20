@@ -133,7 +133,7 @@ function populateComputerBoard(board, size) {
             // Additional span check
             if (isValid && checkShipSpan(target, tempShip, result, orientation, ship.length)) {
                 // Mark all cells together
-                console.log(`Placed ship (length=${ship.length}, or=${orientation}) at [${randI}, ${randJ}]`);
+              //  console.log(`Placed ship (length=${ship.length}, or=${orientation}) at [${randI}, ${randJ}]`);
                 if (orientation === "land") {
                     target.classList.add("ship");
                     addNeighbours(target, calculateDomLengthLand(ship.length), true);
@@ -154,8 +154,12 @@ function populateComputerBoard(board, size) {
 }
 
 function dropShip(e) {
+
+ // console.log("All Ships: ", allShips.list)
+
   const shipId = e.dataTransfer.getData("text/plain");
   const ship = document.getElementById(shipId);
+
   const target = e.target;
   ship.dataset.I = target.dataset.index;
   ship.dataset.J = target.dataset.jndex;
@@ -224,6 +228,10 @@ function dropShip(e) {
     if (ship.dataset.or == "land") {
       addNeighbours(target, result);
     }
+
+allShips.list = allShips.list.filter(s => s.id !== shipId);
+console.log("Ship removed from list:", shipId, "Remaining ships:", allShips.list);
+
   }
 }
 
@@ -403,5 +411,6 @@ export {
   removePreviousMarksPort,
   checkNeighbours,
   isValidDrop,
-  getCellByIndexComp
+  getCellByIndexComp,
+  dropShip
 };
