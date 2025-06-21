@@ -74,88 +74,100 @@ function createBoardComputer(size, board) {
 }
 
 function populateComputerBoard(board, size) {
-    const copy = allShips.list.slice();
-    const maxAttempts = 100;
+  const copy = allShips.list.slice();
+  const maxAttempts = 100;
 
-    function checkShipSpan(target, tempShip, result, orientation, length) {
-        let i = parseInt(target.dataset.indexComp);
-        let j = parseInt(target.dataset.jndexComp);
+  function checkShipSpan(target, tempShip, result, orientation, length) {
+    let i = parseInt(target.dataset.indexComp);
+    let j = parseInt(target.dataset.jndexComp);
+    if (orientation === "land") {
+      for (let offset = 0; offset < length; offset++) {
+        let newJ = j + offset;
+        const cell = getCellByIndexComp(i, newJ);
+        if (!cell || cell.classList.contains("ship")) return false;
+      }
+    } else {
+      for (let offset = 0; offset < length; offset++) {
+        let newI = i + offset;
+        const cell = getCellByIndexComp(newI, j);
+        if (!cell || cell.classList.contains("ship")) return false;
+      }
+    }
+    return true;
+  }
+
+  for (let ship of copy) {
+    let attempts = 0;
+    let placed = false;
+
+    while (!placed && attempts < maxAttempts) {
+      const randI = Math.floor(Math.random() * size);
+      const randJ = Math.floor(Math.random() * size);
+      const orientation = Math.random() < 0.5 ? "land" : "port";
+      const target = getCellByIndexComp(randI, randJ);
+
+      if (!target) {
+        attempts++;
+        continue;
+      }
+
+      const tempShip = {
+        dataset: {
+          length: ship.length,
+          or: orientation,
+          I: randI.toString(),
+          J: randJ.toString(),
+        },
+      };
+
+      const result = calculateDomLengthLand(ship.length);
+
+      // Validate placement
+      let isValid = false;
+      if (orientation === "land") {
+        isValid =
+          isValidDrop(target, result, true) &&
+          checkNeighbours(target, result, true);
+      } else {
+        isValid =
+          isValidDropPort(tempShip, result, true) &&
+          checkNeighboursPort(tempShip, result, true);
+      }
+
+      // Additional span check
+      if (
+        isValid &&
+        checkShipSpan(target, tempShip, result, orientation, ship.length)
+      ) {
+        // Mark all cells together
+        //  console.log(`Placed ship (length=${ship.length}, or=${orientation}) at [${randI}, ${randJ}]`);
         if (orientation === "land") {
-            for (let offset = 0; offset < length; offset++) {
-                let newJ = j + offset;
-                const cell = getCellByIndexComp(i, newJ);
-                if (!cell || cell.classList.contains("ship")) return false;
-            }
+          target.classList.add("ship");
+          addNeighbours(target, calculateDomLengthLand(ship.length), true);
         } else {
-            for (let offset = 0; offset < length; offset++) {
-                let newI = i + offset;
-                const cell = getCellByIndexComp(newI, j);
-                if (!cell || cell.classList.contains("ship")) return false;
-            }
+          target.classList.add("ship");
+          addNeighboursPort(
+            tempShip,
+            calculateDomLengthLand(ship.length),
+            true,
+          );
         }
-        return true;
+        placed = true;
+      }
+
+      attempts++;
     }
 
-    for (let ship of copy) {
-        let attempts = 0;
-        let placed = false;
-
-        while (!placed && attempts < maxAttempts) {
-            const randI = Math.floor(Math.random() * size);
-            const randJ = Math.floor(Math.random() * size);
-            const orientation = Math.random() < 0.5 ? "land" : "port";
-            const target = getCellByIndexComp(randI, randJ);
-
-            if (!target) {
-                attempts++;
-                continue;
-            }
-
-            const tempShip = {
-                dataset: {
-                    length: ship.length,
-                    or: orientation,
-                    I: randI.toString(),
-                    J: randJ.toString()
-                }
-            };
-
-            const result = calculateDomLengthLand(ship.length);
-
-            // Validate placement
-            let isValid = false;
-            if (orientation === "land") {
-                isValid = isValidDrop(target, result, true) && checkNeighbours(target, result, true);
-            } else {
-                isValid = isValidDropPort(tempShip, result, true) && checkNeighboursPort(tempShip, result, true);
-            }
-
-            // Additional span check
-            if (isValid && checkShipSpan(target, tempShip, result, orientation, ship.length)) {
-                // Mark all cells together
-              //  console.log(`Placed ship (length=${ship.length}, or=${orientation}) at [${randI}, ${randJ}]`);
-                if (orientation === "land") {
-                    target.classList.add("ship");
-                    addNeighbours(target, calculateDomLengthLand(ship.length), true);
-                } else {
-                    target.classList.add("ship");
-                    addNeighboursPort(tempShip, calculateDomLengthLand(ship.length), true);
-                }
-                placed = true;
-            }
-
-            attempts++;
-        }
-
-        if (!placed) {
-            console.warn(`Could not place ship of length ${ship.length} after ${maxAttempts} attempts`);
-        }
+    if (!placed) {
+      console.warn(
+        `Could not place ship of length ${ship.length} after ${maxAttempts} attempts`,
+      );
     }
+  }
 }
 
 function dropShip(e) {
-
- // console.log("All Ships: ", allShips.list)
+  // console.log("All Ships: ", allShips.list)
 
   const shipId = e.dataTransfer.getData("text/plain");
   const ship = document.getElementById(shipId);
@@ -166,7 +178,7 @@ function dropShip(e) {
   ship.dataset.index = target.dataset.index;
   ship.dataset.jndex = target.dataset.jndex;
   const board = target.parentElement;
-//  console.log(target);
+  //  console.log(target);
 
   if (!target.classList.contains("ship")) {
     if (!ship) {
@@ -174,7 +186,7 @@ function dropShip(e) {
       return; // stop further execution
     }
 
-  //  console.log("ship dataset", ship.dataset);
+    //  console.log("ship dataset", ship.dataset);
 
     let result = calculateDomLengthLand(ship.dataset.length);
 
@@ -187,11 +199,11 @@ function dropShip(e) {
       if (!isValidDropPort(ship, result)) return alert("cant proceed");
       removePreviousMarksPort(ship);
     }
-  //  console.log("neighbourse checked");
+    //  console.log("neighbourse checked");
 
     result = calculateDomLengthLand(ship.dataset.length);
 
-  //  console.log(ship.dataset.length);
+    //  console.log(ship.dataset.length);
 
     ship.dataset.refi = target.dataset.jndex - result[0];
     ship.dataset.refj = target.dataset.jndex - result[1];
@@ -201,18 +213,18 @@ function dropShip(e) {
     ship.dataset.refx = target.dataset.index - result[0];
     ship.dataset.refy = target.dataset.index - result[1];
 
- //   console.log("refi", ship.dataset.refi);
- //   console.log("refj", ship.dataset.refj);
- //   console.log("I", ship.dataset.I);
+    //   console.log("refi", ship.dataset.refi);
+    //   console.log("refj", ship.dataset.refj);
+    //   console.log("I", ship.dataset.I);
 
     //validity
 
     if (ship.dataset.or == "land") {
-   //   console.log("ship in landscape");
+      //   console.log("ship in landscape");
       let newGrid = `${target.dataset.jndex - result[0] + 1} / ${target.dataset.jndex - result[1] + 2}`;
-   //   console.log("newGridColumn", newGrid); // newGrid = 2 / 7
+      //   console.log("newGridColumn", newGrid); // newGrid = 2 / 7
       let newGridRow = target.dataset.index - -1;
-   //   console.log("newGridRow", newGridRow); // newGridRow = 3
+      //   console.log("newGridRow", newGridRow); // newGridRow = 3
       ship.style.gridColumn = newGrid;
       ship.style.gridRow = newGridRow;
     } else if (ship.dataset.or == "port") {
@@ -229,9 +241,13 @@ function dropShip(e) {
       addNeighbours(target, result);
     }
 
-allShips.list = allShips.list.filter(s => s.id !== shipId);
-console.log("Ship removed from list:", shipId, "Remaining ships:", allShips.list);
-
+    allShips.list = allShips.list.filter((s) => s.id !== shipId);
+    console.log(
+      "Ship removed from list:",
+      shipId,
+      "Remaining ships:",
+      allShips.list,
+    );
   }
 }
 
@@ -255,16 +271,15 @@ function addNeighbours(target, result, flag = false) {
   let i = target.dataset.index;
   let j = target.dataset.jndex;
 
-//  console.log(`Added classes in land to neighbours of ${i} ${j}`);
+  //  console.log(`Added classes in land to neighbours of ${i} ${j}`);
 
   while (result[0] > 0) {
     let newJ = j - result[0];
-    if(flag){
-    getCellByIndexComp(i, newJ).classList.add("ship");
-    }
-    else{
-    getCellByIndex(i, newJ).classList.add("ship");
-    getCellByIndex(i, newJ).classList.add("hidden");
+    if (flag) {
+      getCellByIndexComp(i, newJ).classList.add("ship");
+    } else {
+      getCellByIndex(i, newJ).classList.add("ship");
+      getCellByIndex(i, newJ).classList.add("hidden");
     }
     // console.log(getCellByIndex(i,newJ))
     result[0]--;
@@ -273,18 +288,17 @@ function addNeighbours(target, result, flag = false) {
   //  console.log("result inside addNeighbours", result)
 
   while (result[1] < 0) {
- //   console.log("insiede 2nd whle");
+    //   console.log("insiede 2nd whle");
 
     let newI = j - result[1];
 
     //   console.log("newI", newI)
-    if(flag){
-    getCellByIndexComp(i, newI).classList.add("ship");
-  }
-  else{
-    getCellByIndex(i, newI).classList.add("ship");
-    getCellByIndex(i, newI).classList.add("hidden");
-  }
+    if (flag) {
+      getCellByIndexComp(i, newI).classList.add("ship");
+    } else {
+      getCellByIndex(i, newI).classList.add("ship");
+      getCellByIndex(i, newI).classList.add("hidden");
+    }
     //    console.log(getCellByIndex(i,newI))
     result[1]++;
   }
@@ -295,27 +309,29 @@ function getCellByIndex(i, j) {
 }
 
 function getCellByIndexComp(i, j) {
-  return document.querySelector(`.cell[data-index-comp="${i}"][data-jndex-comp="${j}"]`);
+  return document.querySelector(
+    `.cell[data-index-comp="${i}"][data-jndex-comp="${j}"]`,
+  );
 }
 
 function isValidDrop(target, result) {
-//  console.log("index", target.dataset.index);
-//  console.log("jndex", target.dataset.jndex);
+  //  console.log("index", target.dataset.index);
+  //  console.log("jndex", target.dataset.jndex);
 
   let j = target.dataset.jndex;
 
-//  console.log("result in valid", result);
+  //  console.log("result in valid", result);
 
   let calculatedI = j - result[0];
   let calculatedJ = j - result[1];
 
-//  console.log("calculatedI", calculatedI);
-//  console.log("caculatedJ", calculatedJ);
+  //  console.log("calculatedI", calculatedI);
+  //  console.log("caculatedJ", calculatedJ);
 
   if (calculatedI < 0) return false;
   if (calculatedJ > 9) return false;
 
-//  console.log("is valid");
+  //  console.log("is valid");
   return true;
 }
 function removePreviousMarks(ship) {
@@ -327,7 +343,7 @@ function removePreviousMarks(ship) {
   for (let j = refStart; j <= refEnd; j++) {
     const cell = getCellByIndex(i, j);
     if (cell) {
-    //  console.log("removing classes from cell", i, j);
+      //  console.log("removing classes from cell", i, j);
       cell.classList.remove("ship", "hidden");
     }
   }
@@ -342,7 +358,7 @@ function removePreviousMarksPort(ship) {
   for (let i = refStart; i <= refEnd; i++) {
     const cell = getCellByIndex(i, j);
     if (cell) {
-    //  console.log("removing classes from cell", i, j);
+      //  console.log("removing classes from cell", i, j);
       cell.classList.remove("ship", "hidden");
     }
   }
@@ -354,46 +370,44 @@ function checkNeighbours(target, result, flag = false) {
 
   while (result[0] > 0) {
     let newJ = j - result[0];
-    if(flag){
-          if (!getCellByIndexComp(i, newJ)) {
-      return false;
-    }
+    if (flag) {
+      if (!getCellByIndexComp(i, newJ)) {
+        return false;
+      }
 
-    if (getCellByIndexComp(i, newJ).classList.contains("ship")) return false;
-    }
-    else{
-    if (!getCellByIndex(i, newJ)) {
-      return false;
-    }
+      if (getCellByIndexComp(i, newJ).classList.contains("ship")) return false;
+    } else {
+      if (!getCellByIndex(i, newJ)) {
+        return false;
+      }
 
-    if (getCellByIndex(i, newJ).classList.contains("ship")) return false;
-    // console.log(getCellByIndex(i,newJ))
-  }
+      if (getCellByIndex(i, newJ).classList.contains("ship")) return false;
+      // console.log(getCellByIndex(i,newJ))
+    }
     result[0]--;
   }
 
   //  console.log("result inside addNeighbours", result)
 
   while (result[1] < 0) {
-   // console.log(" checking Neighbours ");
+    // console.log(" checking Neighbours ");
 
     let newI = j - result[1];
-    if(flag){
-          if (!getCellByIndexComp(i, newI)) {
-      return false;
-    }
+    if (flag) {
+      if (!getCellByIndexComp(i, newI)) {
+        return false;
+      }
 
-    //   console.log("newI", newI)
-    if (getCellByIndexComp(i, newI).classList.contains("ship")) return false;
-    }
-    else{
-    if (!getCellByIndex(i, newI)) {
-      return false;
-    }
+      //   console.log("newI", newI)
+      if (getCellByIndexComp(i, newI).classList.contains("ship")) return false;
+    } else {
+      if (!getCellByIndex(i, newI)) {
+        return false;
+      }
 
-    //   console.log("newI", newI)
-    if (getCellByIndex(i, newI).classList.contains("ship")) return false;
-  }
+      //   console.log("newI", newI)
+      if (getCellByIndex(i, newI).classList.contains("ship")) return false;
+    }
     //    console.log(getCellByIndex(i,newI))
     result[1]++;
   }
@@ -412,5 +426,5 @@ export {
   checkNeighbours,
   isValidDrop,
   getCellByIndexComp,
-  dropShip
+  dropShip,
 };

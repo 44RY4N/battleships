@@ -27,7 +27,7 @@ class ship {
   }
   dom() {
     allShips.list.push(this);
-    domShip(this,this.boardSize);
+    domShip(this, this.boardSize);
   }
 }
 

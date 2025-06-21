@@ -14,7 +14,10 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
- 
+}
+
+#main{
+   z-index:20;
 }
 
 #game {
@@ -26,6 +29,7 @@ body {
   gap: 3rem;
   justify-items: center;
   align-items: center;
+ 
 }
 
 #board,
@@ -34,10 +38,10 @@ body {
   width: 20vw;
   height: 40vh;
 }
-#board{
+#board {
   grid-column: 1/2;
 }
-#boardComputer{
+#boardComputer {
   grid-column: 3/4;
 }
 
@@ -47,10 +51,9 @@ body {
   background-color: black;
   width: 20vw;
   height: 40vh;
-  
 }
 
-#game{
+#game {
   display: none;
 }
 
@@ -64,6 +67,6 @@ body {
   display: none;
 }
 
-.cell.ship{
-    background-color: green;
+.cell.ship {
+  background-color: green;
 }
