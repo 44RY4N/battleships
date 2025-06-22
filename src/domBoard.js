@@ -19,7 +19,7 @@ function createBoard(size, board) {
       cell.classList.add("cell");
       cell.style.width = `100%`;
       cell.style.height = `100%`;
-      cell.style.border = "1px solid black";
+      cell.style.border = "1px solid white";
       cell.dataset.index = i;
       cell.dataset.jndex = j;
 
@@ -49,13 +49,28 @@ function createBoardComputer(size, board) {
   board.style.gridTemplateRows = `repeat(${size} , ${cellSize}%)`;
   board.style.position = "";
 
+  const shellFragment = document.createDocumentFragment();
+  const shell = document.createElement("div");
+  shell.classList.add("shell");
+  shell.style.position = "fixed";
+  shell.style.top = "0";
+  shell.style.left = "0";
+  shell.style.width = "100%";
+  shell.style.height = "100%";
+  shell.style.background = "rgba(0,0,0,0.6)";
+  shell.style.zIndex = "1";
+  shell.style.display = "grid";
+  shell.style.gridTemplateColumns = `repeat(${size} , ${cellSize}%)`;
+  shell.style.gridTemplateRows = `repeat(${size} , ${cellSize}%)`;
+  board.appendChild(shell)
+
   for (let i = 0; i < size; i++) {
     for (let j = 0; j < size; j++) {
       const cell = document.createElement("div");
       cell.classList.add("cell");
       cell.style.width = `100%`;
       cell.style.height = `100%`;
-      cell.style.border = "1px solid black";
+      cell.style.border = "1px solid white";
       cell.dataset.index = i;
       cell.dataset.indexComp = i;
       cell.dataset.jndex = j;
@@ -66,9 +81,14 @@ function createBoardComputer(size, board) {
 
       //event listners
       fragment.appendChild(cell);
+
+      const dropcell = document.createElement("div");
+      dropcell.classList.add("dropcell");
+      shellFragment.appendChild(dropcell)
     }
   }
   board.appendChild(fragment);
+  shell.appendChild(shellFragment);
 
   populateComputerBoard(board, size);
 }

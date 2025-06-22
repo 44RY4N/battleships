@@ -25,8 +25,8 @@ function domShip(obj, boardSize) {
 
   const shipCase = document.createElement("div");
   shipCase.id = "shipCase";
-  shipCase.style.width = `${ship.dataset.length * 10}%`;
-  shipCase.style.height = `${10}%`;
+  shipCase.style.width = `${ship.dataset.length * 10 / 3}%`;
+  shipCase.style.height = `${38}%`;
   shipCase.appendChild(ship);
 
   container.append(shipCase);
