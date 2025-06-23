@@ -2,6 +2,8 @@ import { domShip } from "./domShip.js";
 
 const allShips = {
   list: [],
+  shipHitCount: 11,
+  shipHitCountComp: 11
 };
 
 class ship {

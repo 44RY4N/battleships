@@ -11,9 +11,17 @@ import {  beginPlay } from "./beginPlay.js";
 let blueGroup;
 let greenGroup;
 let rectHelper;
+let isMenuActive = true;
+let camera;
+let Play;
+let PlayFriend;
+let cube;
+let neonTube;
+let neonTube2;
+let textMesh;
 
 function createMenu() {
-  const camera = new THREE.PerspectiveCamera(
+  camera = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
     0.1,
@@ -24,7 +32,7 @@ function createMenu() {
   const menu = document.querySelector("#menu");
   menu.style.display = "grid";
 
-  const renderer = new THREE.WebGLRenderer({});
+  const renderer = new THREE.WebGLRenderer({ antialias:true});
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -40,39 +48,68 @@ function createMenu() {
   //    const controls = new OrbitControls(camera, renderer.domElement);
   //      controls.enableDamping = true;
 
-  const roundedBox = new RoundedBoxGeometry(
+  const roundedBox = new THREE.BoxGeometry(
     2, // width
     2, // height
     2, // depth
     10, // segments (higher = smoother curve)
-    0.2, // radius of edges
   );
 
   blueGroup = new THREE.Group();
+  const boxes = [];
 
   for (let j = -3; j <= 6; j++) {
     for (let i = 0; i < 10; i++) {
       let material = new THREE.MeshBasicMaterial({ color: 0x00ffff });
       let box = new THREE.Mesh(roundedBox, material);
+            // Add edge lines
+const edgeGeometry = new THREE.EdgesGeometry(roundedBox); // use same geometry
+const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x000000 }); // edge color
+const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
+
+box.add(edges); // attach edges to the cube so they move/rotate with it
       box.position.z = -10;
       box.position.y = j * 5 + 1;
       box.position.x = i * 5 + 1;
+      boxes.push(box);
       blueGroup.add(box);
     }
   }
 
   greenGroup = new THREE.Group();
 
+
   for (let j = -3; j <= 6; j++) {
     for (let i = -1; i > -10; i--) {
       let material = new THREE.MeshBasicMaterial({ color: 0x89f336 });
       let box = new THREE.Mesh(roundedBox, material);
+      // Add edge lines
+const edgeGeometry = new THREE.EdgesGeometry(roundedBox); // use same geometry
+const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x000000 }); // edge color
+const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
+
+box.add(edges); // attach edges to the cube so they move/rotate with it
       box.position.z = -10;
       box.position.y = j * 5 + 1;
       box.position.x = i * 5 + 1;
+      boxes.push(box);
       greenGroup.add(box);
     }
   }
+
+ gsap.to(boxes.map(b => b.rotation), {
+  duration: 2,
+  y: Math.PI / 2,
+  repeat: -1,
+  yoyo: true,
+  ease: "power1.inOut",
+  stagger: {
+    each: 0.1,         // delay between each box
+    from: "random"
+  },
+  repeatRefresh: true // ensures a new random order each loop
+});
+
 
   blueGroup.scale.set(4, 4, 4);
   greenGroup.scale.set(4, 4, 4);
@@ -107,7 +144,7 @@ function createMenu() {
     roughness: 0.01,
   });
 
-  const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+  cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
   cube.position.z = 0;
   cube.position.y = 8;
   cube.receiveShadow = true;
@@ -150,7 +187,7 @@ cube.add(flatMesh);
     roughness: 0.01,
   });
 
-  const Play = new THREE.Mesh(PlayGeometry, PlayMaterial);
+   Play = new THREE.Mesh(PlayGeometry, PlayMaterial);
 
   Play.receiveShadow = true;
   Play.position.set(0,2,0)
@@ -167,7 +204,7 @@ cube.add(flatMesh);
     roughness: 0.01,
   });
 
-  const PlayFriend = new THREE.Mesh(PlayGeometryFriend, PlayMaterialFriend);
+  PlayFriend = new THREE.Mesh(PlayGeometryFriend, PlayMaterialFriend);
 
   PlayFriend.receiveShadow = true;
   PlayFriend.position.set(0,-3,0)
@@ -186,8 +223,6 @@ cube.add(flatMesh);
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
   });
-
-  let textMesh;
 
   const fontLoader = new FontLoader();
   fontLoader.load(
@@ -285,7 +320,7 @@ cube.add(flatMesh);
 
   // neon tube 1 
 
-  const neonTube = new THREE.Mesh(tubeGeometry, tubeMaterial);
+  neonTube = new THREE.Mesh(tubeGeometry, tubeMaterial);
   neonTube.rotation.z = Math.PI / 2; // lay it horizontally
   neonTube.position.set(-7.6, 8, 0.25); // adjust as needed
   neonTube.rotation.z = 0;
@@ -293,7 +328,7 @@ cube.add(flatMesh);
 
   // neon tube 2
 
-  const neonTube2 = new THREE.Mesh(tubeGeometry, tubeMaterial);
+  neonTube2 = new THREE.Mesh(tubeGeometry, tubeMaterial);
   neonTube2.position.set(7.6, 8, 0.25); // adjust as needed
   neonTube2.rotation.z = 0;
   scene.add(neonTube2);
@@ -329,6 +364,7 @@ cube.add(flatMesh);
   mouseScreen.x = e.clientX;
   mouseScreen.y = e.clientY;
 
+  if (isMenuActive){
   const x = (e.clientX / window.innerWidth) * 2 - 1;
   const y = -(e.clientY / window.innerHeight) * 2 + 1;
 
@@ -339,6 +375,7 @@ cube.add(flatMesh);
     ease: "power2.out",
     onUpdate: () => camera.lookAt(0, 3, -10),
   });
+}
 }
 
 
@@ -385,7 +422,7 @@ cube.add(flatMesh);
 
 function initiatePlay(camera){
 
-  window.removeEventListener("mousemove",onMouseMove)
+  isMenuActive = false;
 
   blueGroup.position.z = 0;
   greenGroup.position.z = 0;
@@ -428,7 +465,7 @@ function initiatePlay(camera){
   // animation loop set
 
   renderer.setAnimationLoop(() => {
-    animate(renderer, scene, camera, mouseScreen,Play,PlayFriend);
+    animate(renderer, scene, camera, mouseScreen,Play,PlayFriend,onMouseMove);
   });
 }
 
@@ -477,8 +514,10 @@ function isObjectHovered(object, camera, mouseScreen) {
   );
 }
 
-function animate(renderer, scene, camera, mouseScreen, Play, PlayFriend) {
+function animate(renderer, scene, camera, mouseScreen, Play, PlayFriend,onMouseMove) {
   // Existing group hover logic
+
+  const canvas = document.querySelector("canvas");
   if (isObjectHovered(blueGroup, camera, mouseScreen)) {
     gsap.to(blueGroup.position, { z: -5, duration: 2 });
   } else {
@@ -495,9 +534,11 @@ function animate(renderer, scene, camera, mouseScreen, Play, PlayFriend) {
   if (isObjectHovered(Play, camera, mouseScreen)) {
     gsap.to(Play.scale, { x: 1.1, y: 1.1, z: 1.1, duration: 0.6 }); // Scale up
     Play.material.color.set(0x2a2a2a); // Change color
+    canvas.style.cursor = "pointer"; // Change cursor
   } else {
     gsap.to(Play.scale, { x: 1, y: 1, z: 1, duration: 0.6 }); // Reset scale
     Play.material.color.set(0x1e1e1e); // Reset color
+    canvas.style.cursor = "default"; // Reset cursor
   }
 
   // hover check for PlayFriend button
@@ -505,6 +546,7 @@ function animate(renderer, scene, camera, mouseScreen, Play, PlayFriend) {
     if (isObjectHovered(PlayFriend, camera, mouseScreen)) {
     gsap.to(PlayFriend.scale, { x: 1.1, y: 1.1, z: 1.1, duration: 0.6 }); // Scale up
     PlayFriend.material.color.set(0x2a2a2a); // Change color
+   canvas.style.cursor = "pointer"; // Change cursor
     
   } else {
     gsap.to(PlayFriend.scale, { x: 1, y: 1, z: 1, duration: 0.6 }); // Reset scale
@@ -513,5 +555,32 @@ function animate(renderer, scene, camera, mouseScreen, Play, PlayFriend) {
 
   renderer.render(scene, camera);
 }
+
+const backButton = document.createElement("button");
+backButton.textContent = "Back to Menu";
+backButton.style.position = "absolute";
+backButton.style.top = "20px";
+backButton.style.left = "20px";
+backButton.style.pointerEvents = "auto";
+
+const game = document.getElementById("game");
+game.appendChild(backButton);
+backButton.addEventListener("click", () => {
+  isMenuActive = true;
+  gsap.to(camera.position, {
+    x: 0,
+    y: 4,
+    z: 10,
+    duration: 3,
+    ease: "power2.inOut",
+    onUpdate: () => camera.lookAt(0, 3, -10),
+  });
+  PlayFriend.visible = true;
+  Play.visible = true;
+  cube.visible = true;
+  neonTube.visible = true;
+  neonTube2.visible = true;
+  textMesh.visible = true;
+});
 
 export { createMenu };

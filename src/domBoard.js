@@ -13,6 +13,7 @@ function createBoard(size, board) {
   board.style.gridTemplateRows = `repeat(${size} , ${cellSize}%)`;
   board.style.position = "";
 
+
   for (let i = 0; i < size; i++) {
     for (let j = 0; j < size; j++) {
       const cell = document.createElement("div");
