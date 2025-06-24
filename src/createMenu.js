@@ -8,6 +8,7 @@ import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeom
 import { RectAreaLight } from "three/src/lights/RectAreaLight.js";
 import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHelper.js";
 import {  beginPlay } from "./beginPlay.js";
+import {deleteGame} from "./deleteGame.js"
 let blueGroup;
 let greenGroup;
 let rectHelper;
@@ -361,6 +362,7 @@ cube.add(flatMesh);
 
   //on mouse move function 
   function onMouseMove(e) {
+    
   mouseScreen.x = e.clientX;
   mouseScreen.y = e.clientY;
 
@@ -566,7 +568,9 @@ backButton.style.pointerEvents = "auto";
 const game = document.getElementById("game");
 game.appendChild(backButton);
 backButton.addEventListener("click", () => {
-  isMenuActive = true;
+  deleteGame();
+  setTimeout(()=>{
+isMenuActive = true;
   gsap.to(camera.position, {
     x: 0,
     y: 4,
@@ -581,6 +585,8 @@ backButton.addEventListener("click", () => {
   neonTube.visible = true;
   neonTube2.visible = true;
   textMesh.visible = true;
+  },1600)
+
 });
 
 export { createMenu };

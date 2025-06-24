@@ -3,8 +3,24 @@ import { rotateShip, dragStart } from "./domShip.js";
 import { createBoard, createBoardComputer, dropShip } from "./domBoard.js";
 import {beginGame} from "./beginGame.js";
 import gsap from "gsap";
-
+let played = false;
 function initializeGame() {
+
+      let b1 = document.querySelector(".boardContainer");
+    let b2 = document.querySelector(".boardContainer2");
+  if(played){
+    gsap.to(b1,{
+          x:0,
+          duration:0.8
+        })
+        gsap.to(b2,{
+          x:0,
+          duration:0.8,
+        })
+  }
+  played = false;
+
+
   const game = document.getElementById("game");
   game.style.display = "grid"; // changin displ -----<<<<<<<
 
@@ -44,6 +60,7 @@ function handleReady() {
   if (allShips.list.length == 0) {
     const board = document.querySelector("#board");
     const button = document.querySelector("#ready");
+    const buttonContainer = document.querySelector("#buttonContainer");
     for (let child of board.children) {
       child.draggable = false;
       child.removeEventListener("click", rotateShip);
@@ -56,10 +73,10 @@ function handleReady() {
     setTimeout(()=>{
       handleBegin();
     },1000)
-    gsap.to(button,{
-      y:450,
+    gsap.to(buttonContainer,{
+      y:-600,
       duration:0.8,
-      ease:"power2.inOut",
+      ease:"power1.inOut",
     })
   }
   else{
@@ -71,6 +88,7 @@ function handleBegin(){
   const shell = document.querySelector(".shell");
       let b1 = document.querySelector(".boardContainer");
     let b2 = document.querySelector(".boardContainer2");
+    played = true;
   gsap.to(shell.children,{
     scale:0,
     duration: 0.5,
