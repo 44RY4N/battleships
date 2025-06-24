@@ -94,6 +94,7 @@ for (let i = 0; i < 10; i++) {
 }
 let shuffledMoves = shuffleArray(moves);
 let direction = 0;
+let steps = 0;
 
 function playCompTurn() {
   while (true) { // Iterative loop to avoid recursion
@@ -101,20 +102,20 @@ function playCompTurn() {
     if (anchor !== null) {
       direction++;
       let validMove = false;
-      if (direction === 1 && anchor[1] + 1 < 10) {
-        i = anchor[0]; j = anchor[1] + 1; // Right
+      if (direction === 1 && anchor[1] + 1 + steps< 10) {
+        i = anchor[0]; j = anchor[1] + 1 + steps; // Right
         validMove = true;
         console.log("direction 1 ran");
-      } else if (direction === 2 && anchor[1] - 1 >= 0) {
-        i = anchor[0]; j = anchor[1] - 1; // Left
+      } else if (direction === 2 && anchor[1] - 1 - steps>= 0) {
+        i = anchor[0]; j = anchor[1] - 1 - steps; // Left
         validMove = true;
         console.log("direction 2 ran");
-      } else if (direction === 3 && anchor[0] - 1 >= 0) {
-        i = anchor[0] - 1; j = anchor[1]; // Up
+      } else if (direction === 3 && anchor[0] - 1 - steps>= 0) {
+        i = anchor[0] - 1 - steps; j = anchor[1]; // Up
         validMove = true;
         console.log("direction 3 ran");
-      } else if (direction === 4 && anchor[0] + 1 < 10) {
-        i = anchor[0] + 1; j = anchor[1]; // Down
+      } else if (direction === 4 && anchor[0] + 1 + steps < 10) {
+        i = anchor[0] + 1 + steps; j = anchor[1]; // Down
         validMove = true;
         console.log("direction 4 ran");
       }
@@ -122,6 +123,7 @@ function playCompTurn() {
       if (!validMove || direction > 4) {
         anchor = null; // Reset anchor
         direction = 0; // Reset direction
+        steps = 0; // Reset steps
         console.log("reset anchor, switching to random mode");
         continue; // Switch to random mode
       }
@@ -157,10 +159,12 @@ function playCompTurn() {
           setTimeout(() => alert("You Lost!"), 1000);
           return;
         }
+        steps++;
         direction--; // Retry same direction
-        anchor = [i, j]; // Update anchor to new hit
+       // anchor = [i, j]; // Update anchor to new hit
         continue;
       } else {
+        steps = 0;
         currentPickCell.style.backgroundColor = "rgba(0,255,0,0.6)";
         if (direction === 4) {
           anchor = null; // All directions tried
