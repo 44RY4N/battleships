@@ -8,6 +8,7 @@ import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeom
 import { RectAreaLight } from "three/src/lights/RectAreaLight.js";
 import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHelper.js";
 import {  beginPlay } from "./beginPlay.js";
+import {  beginPlayFriend } from "./beginPlay.js";
 import {deleteGame} from "./deleteGame.js"
 let blueGroup;
 let greenGroup;
@@ -413,7 +414,7 @@ cube.add(flatMesh);
       initiatePlay(camera);
     }
     else if (isObjectHovered(PlayFriend, camera, mouseScreen)){
-      console.log("play friend button clicked");
+      initiatePlayFriend(camera);
     }
     else 
     return;
@@ -436,6 +437,34 @@ function initiatePlay(camera){
     ease: "power2.inOut",
     onUpdate: () => camera.lookAt(0, camera.position.y*-10, -100),
     onComplete: () =>{beginPlay();}
+  })
+
+  setTimeout(()=>{
+    PlayFriend.visible = false;
+    Play.visible = false;
+    cube.visible =false;
+    neonTube.visible = false;
+    neonTube2.visible = false;
+    textMesh.visible = false;
+  },2000)
+}
+
+// initiate play friend
+
+function initiatePlayFriend(camera){
+
+  isMenuActive = false;
+
+  blueGroup.position.z = 0;
+  greenGroup.position.z = 0;
+  
+  gsap.to(camera.position,{
+    y:-100,
+    z:-20,
+    duration: 3,
+    ease: "power2.inOut",
+    onUpdate: () => camera.lookAt(0, camera.position.y*-10, -100),
+    onComplete: () =>{beginPlayFriend();}
   })
 
   setTimeout(()=>{

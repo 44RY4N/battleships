@@ -83,7 +83,15 @@ function shipHit() {
   allShips.shipHitCount--;
   console.log(allShips.shipHitCount);
   if (allShips.shipHitCount === 0) {
-    setTimeout(() => alert("You won!"), 1000);
+    setTimeout(() => alert("Player 1 Won!"), 1000);
+  }
+}
+
+function shipHit2() {
+  allShips.shipHitCountFriend--;
+  console.log(allShips.shipHitCountFriend);
+  if (allShips.shipHitCountFriend === 0) {
+    setTimeout(() => alert("Player 2 Won!"), 1000);
   }
 }
 
@@ -120,7 +128,7 @@ function playCompTurn() {
         console.log("direction 4 ran");
       }
 
-      if (!validMove || direction > 4) {
+      if ( direction > 4) {
         anchor = null; // Reset anchor
         direction = 0; // Reset direction
         steps = 0; // Reset steps
@@ -225,4 +233,56 @@ function shuffleArray(arr) {
   return arr;
 }
 
-export { beginGame };
+function beginGameFriends(){
+    const b1 = document.querySelector("#board");
+  const b2 = document.querySelector("#boardComputer");
+   let turn = "player1";
+    for (let child of b2.querySelectorAll(".cell")) {
+    child.addEventListener("click", () => {
+      if (child.textContent !== "" || turn == "player2") return;
+      if (child.classList.contains("ship")) {
+        child.textContent = "X";
+        child.style.display = "flex";
+        child.style.justifyContent = "center";
+        child.style.alignItems = "center";
+        child.style.color = "red";
+        child.style.backgroundColor = "black";
+        shipHit();
+      } else {
+        child.style.backgroundColor = "rgba(0,255,255,0.6)";
+        turn = changeTurn(turn);
+      }
+    });
+  }
+
+      for (let child of b1.querySelectorAll(".cell")) {
+    child.addEventListener("click", () => {
+      if (child.textContent !== "" || turn == "player1") return;
+      if (child.classList.contains("ship")) {
+        child.textContent = "X";
+        child.style.display = "flex";
+        child.style.justifyContent = "center";
+        child.style.alignItems = "center";
+        child.style.color = "red";
+        child.style.backgroundColor = "black";
+        shipHit2();
+      } else {
+        child.style.backgroundColor = "rgba(0,255,255,0.6)";
+       turn = changeTurn(turn);
+      }
+    });
+  }
+
+}
+
+function  changeTurn(turn){
+  if (turn == "player1") {
+  return "player2";
+  }
+  else if(turn == "player2"){
+    return "player1";
+  }
+  else console.warn("Error deciding turn", turn)
+}
+
+export { beginGame , beginGameFriends};

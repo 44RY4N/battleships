@@ -3,6 +3,7 @@ import {
   isValidDropPort,
   handleRotationPort,
   addNeighboursPort,
+  handleRotationPortFriend
 } from "./domShip.js";
 import { allShips } from "./ship.js";
 
@@ -40,6 +41,42 @@ function createBoard(size, board) {
 }
 
 // create board end
+
+
+function createBoard2(size, board) {
+  const fragment = document.createDocumentFragment();
+  let cellSize = 100 / size;
+  board.style.gridTemplateColumns = `repeat(${size} , ${cellSize}%)`;
+  board.style.gridTemplateRows = `repeat(${size} , ${cellSize}%)`;
+  board.style.position = "";
+
+
+  for (let i = 0; i < size; i++) {
+    for (let j = 0; j < size; j++) {
+      const cell = document.createElement("div");
+      cell.classList.add("cell");
+      cell.style.width = `100%`;
+      cell.style.height = `100%`;
+      cell.style.border = "1px solid white";
+      cell.dataset.index = i;
+      cell.dataset.indexComp = i;
+      cell.dataset.jndex = j;
+      cell.dataset.jndexComp = j;
+
+      cell.style.position = "";
+      cell.style.zIndex = "0";
+
+      //event listners
+      cell.addEventListener("dragover", (e) => {
+        e.preventDefault();
+      });
+      cell.addEventListener("drop", dropShipFriend);
+
+      fragment.appendChild(cell);
+    }
+  }
+  board.appendChild(fragment);
+}
 
 // create board computer
 
@@ -194,6 +231,7 @@ function dropShip(e) {
   const ship = document.getElementById(shipId);
 
   const target = e.target;
+ // console.log("target = ",target)
   ship.dataset.I = target.dataset.index;
   ship.dataset.J = target.dataset.jndex;
   ship.dataset.index = target.dataset.index;
@@ -272,6 +310,100 @@ function dropShip(e) {
   }
 }
 
+// dropship friend 
+
+
+function dropShipFriend(e) {
+  // console.log("All Ships: ", allShips.list)
+
+  const shipId = e.dataTransfer.getData("text/plain");
+  const ship = document.getElementById(shipId);
+
+  const target = e.target;
+ // console.log("target = ",target)
+  ship.dataset.I = target.dataset.index;
+  ship.dataset.J = target.dataset.jndex;
+  ship.dataset.index = target.dataset.index;
+  ship.dataset.jndex = target.dataset.jndex;
+  const board = target.parentElement;
+console.log("current board",board);
+console.log("current target",target)
+
+  if (!target.classList.contains("ship")) {
+    if (!ship) {
+      console.warn("Could not find dragged ship with ID:", shipId);
+      return; // stop further execution
+    }
+
+    //  console.log("ship dataset", ship.dataset);
+
+    let result = calculateDomLengthLand(ship.dataset.length);
+
+    if (ship.dataset.or == "land") {
+      if (!checkNeighbours(target, result,true)) return alert("ship colliding");
+      if (!isValidDrop(target, result)) return alert("cant proceed");
+      removePreviousMarks2(ship);
+    } else if (ship.dataset.or == "port") {
+      if (!checkNeighboursPort(ship, result, true)) return alert("ship colliding");
+      if (!isValidDropPort(ship, result)) return alert("cant proceed");
+      removePreviousMarksPort2(ship);
+    }
+    //  console.log("neighbourse checked");
+
+    result = calculateDomLengthLand(ship.dataset.length);
+
+    //  console.log(ship.dataset.length);
+
+    ship.dataset.refi = target.dataset.jndex - result[0];
+    ship.dataset.refj = target.dataset.jndex - result[1];
+    ship.dataset.refI = target.dataset.index;
+
+    ship.dataset.refJ = target.dataset.jndex;
+    ship.dataset.refx = target.dataset.index - result[0];
+    ship.dataset.refy = target.dataset.index - result[1];
+
+    //   console.log("refi", ship.dataset.refi);
+    //   console.log("refj", ship.dataset.refj);
+    //   console.log("I", ship.dataset.I);
+
+    //validity
+
+    if (ship.dataset.or == "land") {
+      //   console.log("ship in landscape");
+      let newGrid = `${target.dataset.jndex - result[0] + 1} / ${target.dataset.jndex - result[1] + 2}`;
+      //   console.log("newGridColumn", newGrid); // newGrid = 2 / 7
+      let newGridRow = target.dataset.index - -1;
+      //   console.log("newGridRow", newGridRow); // newGridRow = 3
+      ship.style.gridColumn = newGrid;
+      ship.style.gridRow = newGridRow;
+    } else if (ship.dataset.or == "port") {
+      handleRotationPortFriend(ship, result);
+    }
+
+    ship.style.zIndex = "10";
+
+    board.appendChild(ship);
+
+    target.classList.add("ship");
+    target.classList.add("hidden");
+    if (ship.dataset.or == "land") {
+      addNeighbours(target, result, true, true);
+    }
+
+    allShips.list = allShips.list.filter((s) => s.id !== shipId);
+    console.log(
+      "Ship removed from list:",
+      shipId,
+      "Remaining ships:",
+      allShips.list,
+    );
+  }
+}
+
+
+
+//sdsdad
+
 function calculateDomLengthLand(length) {
   let right = 0;
   let left = 0;
@@ -287,7 +419,7 @@ function calculateDomLengthLand(length) {
   return result;
 }
 
-function addNeighbours(target, result, flag = false) {
+function addNeighbours(target, result, flag = false, flag2 = false) {
   result[0];
   let i = target.dataset.index;
   let j = target.dataset.jndex;
@@ -298,6 +430,9 @@ function addNeighbours(target, result, flag = false) {
     let newJ = j - result[0];
     if (flag) {
       getCellByIndexComp(i, newJ).classList.add("ship");
+      if(flag2){
+        getCellByIndexComp(i, newJ).classList.add("hidden");
+      }
     } else {
       getCellByIndex(i, newJ).classList.add("ship");
       getCellByIndex(i, newJ).classList.add("hidden");
@@ -316,6 +451,9 @@ function addNeighbours(target, result, flag = false) {
     //   console.log("newI", newI)
     if (flag) {
       getCellByIndexComp(i, newI).classList.add("ship");
+            if(flag2){
+        getCellByIndexComp(i, newI).classList.add("hidden");
+      }
     } else {
       getCellByIndex(i, newI).classList.add("ship");
       getCellByIndex(i, newI).classList.add("hidden");
@@ -326,12 +464,12 @@ function addNeighbours(target, result, flag = false) {
 }
 
 function getCellByIndex(i, j) {
-  return document.querySelector(`.cell[data-index="${i}"][data-jndex="${j}"]`);
+  return document.querySelector(`#board .cell[data-index="${i}"][data-jndex="${j}"]`);
 }
 
 function getCellByIndexComp(i, j) {
   return document.querySelector(
-    `.cell[data-index-comp="${i}"][data-jndex-comp="${j}"]`,
+    `#boardComputer .cell[data-index-comp="${i}"][data-jndex-comp="${j}"]`,
   );
 }
 
@@ -370,6 +508,21 @@ function removePreviousMarks(ship) {
   }
 }
 
+function removePreviousMarks2(ship) {
+  const i = ship.dataset.refI;
+  const refStart = parseInt(ship.dataset.refi);
+  const refEnd = parseInt(ship.dataset.refj);
+
+  // Remove 'hidden' and 'ship' classes from the previously occupied cells
+  for (let j = refStart; j <= refEnd; j++) {
+    const cell = getCellByIndexComp(i, j);
+    if (cell) {
+      //  console.log("removing classes from cell", i, j);
+      cell.classList.remove("ship", "hidden");
+    }
+  }
+}
+
 function removePreviousMarksPort(ship) {
   const j = ship.dataset.refJ;
   const refStart = parseInt(ship.dataset.refx);
@@ -385,19 +538,37 @@ function removePreviousMarksPort(ship) {
   }
 }
 
+function removePreviousMarksPort2(ship) {
+  const j = ship.dataset.refJ;
+  const refStart = parseInt(ship.dataset.refx);
+  const refEnd = parseInt(ship.dataset.refy);
+
+  // Remove 'hidden' and 'ship' classes from the previously occupied cells
+  for (let i = refStart; i <= refEnd; i++) {
+    const cell = getCellByIndexComp(i, j);
+    if (cell) {
+      //  console.log("removing classes from cell", i, j);
+      cell.classList.remove("ship", "hidden");
+    }
+  }
+}
+
 function checkNeighbours(target, result, flag = false) {
   let i = target.dataset.index;
   let j = target.dataset.jndex;
 
   while (result[0] > 0) {
     let newJ = j - result[0];
+console.log("index",i,newJ)
     if (flag) {
       if (!getCellByIndexComp(i, newJ)) {
+console.log("got this cell",getCellByIndexComp(i,newJ))
         return false;
       }
 
       if (getCellByIndexComp(i, newJ).classList.contains("ship")) return false;
-    } else {
+    } 
+    else {
       if (!getCellByIndex(i, newJ)) {
         return false;
       }
@@ -439,13 +610,17 @@ function checkNeighbours(target, result, flag = false) {
 export {
   addNeighbours,
   createBoard,
+  createBoard2,
   createBoardComputer,
   calculateDomLengthLand,
   removePreviousMarks,
+  removePreviousMarks2,
   getCellByIndex,
   removePreviousMarksPort,
+  removePreviousMarksPort2,
   checkNeighbours,
   isValidDrop,
   getCellByIndexComp,
   dropShip,
+  dropShipFriend,
 };

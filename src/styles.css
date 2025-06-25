@@ -136,7 +136,7 @@ body {
   border-radius: 4px;
 }
 
-.shell,.pickshell{
+.shell,.pickshell,.shell1{
   padding:1rem;
   border-radius: 2rem;
   transition: background-color 0.9s ease-in-out;

@@ -1,9 +1,19 @@
 import gsap from "gsap";
+import { allShips } from "./ship.js";
+import { handleReady, handleReadyFriend} from "./game.js"
 function deleteGame(){
+    allShips.list = [];
+    allShips.shipHitCount = 11;
+    allShips.shipHitCountComp = 11;
+    allShips.shipHitCountFriend = 11;
     const board = document.getElementById("board");
     const boardComp = document.getElementById("boardComputer")
     board.innerHTML = "";
     boardComp.innerHTML = "";
+
+    const ready = document.querySelector("#ready");
+    ready.removeEventListener("click", handleReady);
+    ready.removeEventListener("click",handleReadyFriend)
     
     const boardContainer = document.querySelector(".boardContainer");
     const boardContainer2 = document.querySelector(".boardContainer2");
