@@ -10,6 +10,20 @@ function deleteGame(){
     const boardComp = document.getElementById("boardComputer")
     board.innerHTML = "";
     boardComp.innerHTML = "";
+    board.classList.remove("hov");
+    boardComp.classList.remove("hov");
+
+    const textArea = document.querySelector("#textArea");
+    textArea.classList.add("hiddenfade");
+
+    const turnCounter = document.querySelector("#turnCounter");
+    turnCounter.classList.add("hiddenfade");
+
+    const turn = document.querySelector("#turn");
+    turn.textContent = "";
+
+    const backButton = document.querySelector("#backButton");
+    backButton.style.display = "none";
 
     const ready = document.querySelector("#ready");
     ready.removeEventListener("click", handleReady);

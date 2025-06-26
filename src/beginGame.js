@@ -7,6 +7,7 @@ function beginGame() {
   const cellSize = 100 / size;
   const board = document.querySelector("#board");
   const b2 = document.querySelector("#boardComputer");
+  b2.classList.add("hov");
 
   // Create .pickshell
   const shellFragment = document.createDocumentFragment();
@@ -237,6 +238,10 @@ function beginGameFriends(){
     const b1 = document.querySelector("#board");
   const b2 = document.querySelector("#boardComputer");
    let turn = "player1";
+
+  const turn2 = document.querySelector("#turn");
+  turn2.textContent = "Player 1";
+   b2.classList.add("hov");
     for (let child of b2.querySelectorAll(".cell")) {
     child.addEventListener("click", () => {
       if (child.textContent !== "" || turn == "player2") return;
@@ -276,10 +281,19 @@ function beginGameFriends(){
 }
 
 function  changeTurn(turn){
+  const b1 = document.querySelector("#board");
+  const b2 = document.querySelector("#boardComputer");
+  const turn2 = document.querySelector("#turn");
   if (turn == "player1") {
+    turn2.textContent = "Player 2";
+    b2.classList.remove("hov");
+    b1.classList.add("hov");
   return "player2";
   }
   else if(turn == "player2"){
+     turn2.textContent = "Player 1";
+    b1.classList.remove("hov");
+    b2.classList.add("hov");
     return "player1";
   }
   else console.warn("Error deciding turn", turn)

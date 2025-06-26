@@ -588,11 +588,13 @@ function animate(renderer, scene, camera, mouseScreen, Play, PlayFriend,onMouseM
 }
 
 const backButton = document.createElement("button");
+backButton.id = "backButton";
 backButton.textContent = "Back to Menu";
 backButton.style.position = "absolute";
 backButton.style.top = "20px";
 backButton.style.left = "20px";
 backButton.style.pointerEvents = "auto";
+backButton.style.display = "none";
 
 const game = document.getElementById("game");
 game.appendChild(backButton);

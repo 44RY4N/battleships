@@ -6,6 +6,10 @@ import gsap from "gsap";
 let played = false;
 function initializeGame() {
 
+  const turn = document.querySelector("#turn");
+  const turnCounter = document.querySelector("#turnCounter");
+  turn.textContent = "Human";
+
       let b1 = document.querySelector(".boardContainer");
     let b2 = document.querySelector(".boardContainer2");
   if(played){
@@ -54,6 +58,13 @@ function initializeGame() {
 
   const boardElementComputer = document.querySelector("#boardComputer");
   const boardComputer = createBoardComputer(10, boardElementComputer);
+  setTimeout(()=>{
+    const backButton = document.querySelector("#backButton");
+    backButton.style.display = "block";
+  },4000)
+  textArea.classList.remove("hiddenfade");
+  turnCounter.classList.remove("hiddenfade")
+  
 }
 
 function handleReady() {
@@ -125,6 +136,10 @@ function handleBegin(){
 // Friend logic 
 
 function initializeGameFriend() {
+  
+  const turn = document.querySelector("#turn");
+  const turnCounter = document.querySelector("#turnCounter");
+  turn.textContent = "Player 1";
 
     let b1 = document.querySelector(".boardContainer");
     let b2 = document.querySelector(".boardContainer2");
@@ -184,10 +199,21 @@ for(let child of bComp.children){
   })
   child.draggable = false;
 }
+
+  setTimeout(()=>{
+    const backButton = document.querySelector("#backButton");
+    backButton.style.display = "block";
+  },4000)
+  textArea.classList.remove("hiddenfade");
+  turnCounter.classList.remove("hiddenfade");
+
 }
 // initialize game friend 2 
 
 function initializeGameFriend2() {
+
+  const turn = document.querySelector("#turn");
+  turn.textContent = "Player 2";
 
   const ship1 = new ship(4, "s4", 10,true);
   const ship2 = new ship(5, "s5", 10,true);
