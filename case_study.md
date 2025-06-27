@@ -32,12 +32,14 @@
 
 ### 🎲 3D Interactive Menu
 - The homepage features a dynamic grid of 3D cubes using **Three.js**, subtly animated using GSAP.
-- Hovering effects give a sense of interactivity and depth.
+- Hovering effects give a sense of interactivity and perpspective to the background.
 - Clicking a menu option animates the camera to a new position, revealing the game grid seamlessly.
+- The new position is placed at a spot where the generated cube are reused to display a grid vs grid background as we expect in a game of battleships
 
 ### 🚀 Transitions with Purpose
 - All transitions feel natural and cinematic, improving UX and immersion.
 - Reusable GSAP animations for camera, grid, and UI fades.
+- All transitions handle timing to prevent any bugs on spam clicking.
 
 ---
 
@@ -47,20 +49,23 @@ Unlike typical random shooters, the AI in single-player mode uses **stateful log
 
 ### 1. **Hunt Mode**
 - Randomly selects tiles until it hits a ship.
+- On hit switches to Target Mode and "Anchors" that tile.
 
 ### 2. **Target Mode**
-- Remembers the hit tile.
+- Remembers the hit tile as the anchor until fully explored.
 - Explores in four directions to "lock onto" ship orientation.
+- On second hit, we go to Sink Mode.
 
 ### 3. **Sink Mode**
-- Continues attacking in a single direction until it sinks the ship.
+- Continues attacking in a single direction until it sinks the ship or a miss.
 - Backs up and tries the opposite direction if it reaches a boundary or miss.
 
 ### 4. **Cleanup Mode**
 - Marks surrounding tiles as "cleared" to avoid redundant guesses.
 - Resets internal state and restarts from Hunt Mode.
 
-> This approach gives the AI a **realistic and challenging personality**, harder than most human players.
+> This approach gives the AI a **realistic and challenging personality**, based on human logic of playing battleships makes the AI a challenging opponent.
+> ;D, enjoyed the overall logic and the outcome.
 
 ---
 
@@ -70,6 +75,7 @@ Unlike typical random shooters, the AI in single-player mode uses **stateful log
 |--------------------------|-----------|
 | Ship overlap prevention | ✅ |
 | Random ship rotation & placement | ✅ |
+| Ship placement on wrong board | ✅ |
 | Prevent double-clicks on same cell | ✅ |
 | Prevent spamming during transitions | ✅ |
 | Game reset & replay smoothness | ✅ |
@@ -86,22 +92,22 @@ Unlike typical random shooters, the AI in single-player mode uses **stateful log
 | File | Responsibility |
 |------|----------------|
 | `game.js` | Controls core game logic and state |
-| `dom.js` | Handles DOM element creation and board management |
-| `ai.js` | Contains AI behavior and state machine |
-| `threeMenu.js` | Initializes and controls 3D scene |
-| `transition.js` | GSAP transitions for smooth gameplay shift |
+| `domBoard.js`,`domShip.js` | Handles DOM element creation and board management |
+| `beginGame.js` | Contains AI behavior and state machine |
+| `createMenu.js` | Initializes and controls 3D scene |
+| `beginPlay.js` | GSAP transitions for smooth gameplay shift |
 | `style.css` | Game and menu styling |
 | `index.html` | Entry point |
-| `utils.js` | Reusable helper functions |
+| `ship.js` | Reusable helper functions |
 
 ---
 
 ## 🌈 What I’m Proud Of
 
-- ✅ Original game logic — every line of AI strategy was written from scratch
-- ✅ Integration of front-end visuals and logic without using frameworks
-- ✅ Eye for polish — smooth transitions, no rough edges, professional feel
-- ✅ This was a stretch project that pushed my creative and logical boundaries
+- ✅ Original game logic — every line of AI strategy was written from scratch, based on human thinking as strategic approach...
+- ✅ Integration of front-end visuals and logic without using frameworks, purely written with basic html, css and javascript with help of libraries like Three.js and gsap
+- ✅ Eye for polish — smooth transitions, no rough edges, professional feel, actually feels like a full fletched game
+- ✅ This was a stretch project that pushed my creative and logical boundaries, I gave it my time, did not rush it, took like a week
 
 ---
 
@@ -120,16 +126,8 @@ Unlike typical random shooters, the AI in single-player mode uses **stateful log
 
 👉 [Play the Battleships Game](https://44ry4n.github.io/battleships/)
 
----
-
-## 🖼️ Screenshots (Add if you want)
-
-- 📸 3D Menu
-- 🎯 Player vs Player Mode
-- 🤖 AI Bot in Action
-- 🌌 Camera Transition Effect
 
 ---
 
-> "This wasn't just a coding project — it was design, animation, strategy, and architecture coming together."  
-> – Aaryan Singh
+> "This wasn't just a coding project — it was design, animation, strategy, and creativity coming together."  
+> – 44RY4N
