@@ -40,17 +40,17 @@ function deleteGame(){
     const buttonContainer = document.querySelector("#buttonContainer");
 
     gsap.to(boardContainer,{
-        y:-600,
+        y:-800,
         duration: 1,
         ease: "power2.out"
     })
         gsap.to(boardContainer2,{
-        y:-600,
+        y:-800,
         duration: 1,
         ease: "power2.out",
     })
     gsap.to(buttonContainer,{
-        y: -600,
+        y: -800,
         duration: 1,
         ease: "power2.out"
     })
