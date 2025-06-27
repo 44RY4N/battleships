@@ -13,6 +13,12 @@ function deleteGame(){
     board.classList.remove("hov");
     boardComp.classList.remove("hov");
 
+    const p1tag = document.querySelector("#p1tag");
+    const p2tag = document.querySelector("#p2tag");
+
+    p1tag.classList.add("hiddenfade");
+    p2tag.classList.add("hiddenfade");
+
     const textArea = document.querySelector("#textArea");
     textArea.classList.add("hiddenfade");
 

@@ -47,6 +47,18 @@ function dragStart(e) {
     return;
   }
   e.dataTransfer.setData("text/plain", target.id);
+
+    // Get ship dimensions in pixels
+  const rect = target.getBoundingClientRect();
+  const width = rect.width;
+  const height = rect.height;
+
+  // Calculate center offsets
+  const xOffset = width / 2;
+  const yOffset = height / 2;
+
+  // Set drag image to the ship itself, centered on cursor
+  e.dataTransfer.setDragImage(target, xOffset, yOffset);
 }
 
 function rotateShip(e) {

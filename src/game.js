@@ -64,6 +64,11 @@ function initializeGame() {
   },4000)
   textArea.classList.remove("hiddenfade");
   turnCounter.classList.remove("hiddenfade")
+      const p1tag = document.querySelector("#p1tag");
+    const p2tag = document.querySelector("#p2tag");
+
+    p1tag.classList.remove("hiddenfade");
+    p2tag.classList.remove("hiddenfade");
   
 }
 
@@ -204,8 +209,16 @@ for(let child of bComp.children){
     const backButton = document.querySelector("#backButton");
     backButton.style.display = "block";
   },4000)
+
+  const textArea = document.querySelector("#textArea");
   textArea.classList.remove("hiddenfade");
   turnCounter.classList.remove("hiddenfade");
+
+        const p1tag = document.querySelector("#p1tag");
+    const p2tag = document.querySelector("#p2tag");
+
+    p1tag.classList.remove("hiddenfade");
+    p2tag.classList.remove("hiddenfade");
 
 }
 // initialize game friend 2 

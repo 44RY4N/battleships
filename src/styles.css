@@ -249,3 +249,23 @@ body {
 #turn{
   margin-left:2vw;
 }
+
+#p1tag,#p2tag{
+  color:white;
+  position: fixed;
+  top:22vh;
+  opacity: 1;
+  transition: all 3.5s ease;
+}
+
+#p1tag{
+  left:17vw;
+}
+
+#p2tag{
+  right:17vw;
+}
+
+#p1tag.hiddenfade,#p2tag.hiddenfade{
+  opacity: 0;
+}
