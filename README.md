@@ -6,10 +6,6 @@
 
 ---
 
-![screenshot](./assets/s2.png)
-
----
-
 ## 🎮 Live Demo
 
 👉 [Play Now](https://44ry4n.github.io/battleships/)
@@ -75,7 +71,8 @@ Learn about design decisions, modular structure, and how the AI was built.
 
 ## 📸 Preview
 
-![preview](https://user-images.githubusercontent.com/your-screenshot.png)
+
+![screenshot](./assets/s2.png)
 
 ---
 
